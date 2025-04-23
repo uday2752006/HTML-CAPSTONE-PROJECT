@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roam Rides - Scooters</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+  <style>
+    /* General Body Styling */
+    body {
+      background-color: #121212;
+      color: #f5f5f5;
+      font-family: 'Arial', sans-serif;
+      line-height: 1.6;
+      background-image: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)), url('https://images.unsplash.com/photo-1558981806-ec527fa84c39?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+      background-attachment: fixed;
+      background-size: cover;
+    }
+
+    /* Transparent Glass Effect */
+    .glass-effect {
+      background: rgba(42, 42, 42, 0.85);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Navbar Styling */
+    .navbar-main {
+      background: rgba(42, 42, 42, 0.95);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+    }
+
+    .navbar-main .brand-text {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #f8c100;
+      margin-left: 10px;
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 1px;
+    }
+
+    /* Neon Styling */
+    .neon-text {
+      color: #f8c100;
+      text-shadow: 0 0 10px rgba(248, 193, 0, 0.7), 0 0 20px rgba(248, 193, 0, 0.5);
+      transition: all 0.3s ease;
+    }
+
+    .neon-text:hover {
+      text-shadow: 0 0 15px rgba(248, 193, 0, 1), 0 0 30px rgba(248, 193, 0, 0.8);
+    }
+
+    .btn-neon {
+      background-color: #f8c100;
+      color: #121212;
+      border-radius: 5px;
+      text-transform: uppercase;
+      font-weight: bold;
+      box-shadow: 0 0 10px rgba(248, 193, 0, 0.7), 0 0 20px rgba(248, 193, 0, 0.5);
+      transition: all 0.3s ease;
+      border: none;
+      padding: 8px 20px;
+    }
+
+    .btn-neon:hover {
+      background-color: #f8c100;
+      color: #121212;
+      box-shadow: 0 0 15px rgba(248, 193, 0, 1), 0 0 30px rgba(248, 193, 0, 0.8);
+      transform: translateY(-2px);
+    }
+
+    /* Card Styles */
+    .card {
+      background-color: rgba(42, 42, 42, 0.85);
+      border: 1px solid rgba(248, 193, 0, 0.3);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+      height: 100%;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(248, 193, 0, 0.2);
+      border: 1px solid rgba(248, 193, 0, 0.6);
+    }
+
+    .card img {
+      border-bottom: 1px solid rgba(248, 193, 0, 0.3);
+      transition: all 0.3s ease;
+      height: 220px;
+      object-fit: cover;
+    }
+
+    .card:hover img {
+      transform: scale(1.03);
+    }
+
+    .card-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      height: calc(100% - 220px);
+    }
+
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #f8c100;
+      margin-bottom: 10px;
+    }
+
+    .card-text {
+      font-size: 0.9rem;
+      color: #bbb;
+      flex-grow: 1;
+    }
+
+    .price {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #f8c100;
+      margin: 10px 0;
+    }
+
+    .card-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: auto;
+    }
+
+    .btn-card {
+      flex: 1;
+      margin: 0 5px;
+      padding: 8px 0;
+      color: white !important;
+    }
+
+    /* Modal Styling */
+    .modal-content {
+      background-color: rgba(42, 42, 42, 0.95);
+      backdrop-filter: blur(15px);
+      color: #fff;
+      border: 1px solid rgba(248, 193, 0, 0.3);
+    }
+
+    /* Cart Notification */
+    .cart-count {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: #f8c100;
+      color: #121212;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    /* Carousel Section */
+    .carousel-item img {
+      max-height: 500px;
+      object-fit: cover;
+      filter: brightness(70%);
+    }
+
+    .carousel-caption {
+      background: rgba(42, 42, 42, 0.7);
+      backdrop-filter: blur(5px);
+      border-radius: 10px;
+      padding: 20px;
+      bottom: 40px;
+    }
+
+    /* Footer Styling */
+    footer {
+      background-color: rgba(18, 18, 18, 0.95);
+      color: #f5f5f5;
+      text-align: center;
+      padding: 30px 10px;
+      font-size: 1rem;
+      margin-top: 50px;
+      border-top: 1px solid rgba(248, 193, 0, 0.3);
+    }
+
+    /* Menu dropdown hover effect */
+    .dropdown-menu a:hover {
+      color: black !important;
+      background-color: #f8c100 !important;
+    }
+
+    /* Menu dropdown normal state */
+    .dropdown-menu a {
+      color: white !important;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .navbar-main .brand-text {
+        font-size: 1.2rem;
+      }
+
+      .card-actions {
+        flex-direction: column;
+      }
+
+      .btn-card {
+        width: 100%;
+        margin: 5px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="navbar-main py-2 fixed-top">
+    <div class="container-fluid d-flex flex-wrap align-items-center justify-content-between">
+      <div class="d-flex align-items-center">
+        <div class="dropdown me-3">
+          <a class="nav-link dropdown-toggle neon-text" href="#" id="allDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-bars"></i> Menu
+          </a>
+          <ul class="dropdown-menu glass-effect" aria-labelledby="allDropdown">
+            <li><a class="dropdown-item text-white" href="index.html"><i class="fas fa-home me-2"></i>Home</a></li>
+            <li><a class="dropdown-item text-white" href="bikehome.html"><i class="fas fa-motorcycle me-2"></i>Petrol Bikes</a></li>
+            <li><a class="dropdown-item text-white" href="scooter.html"><i class="fas fa-scooter me-2"></i>Scooters</a></li>
+            <li><a class="dropdown-item text-white" href="ev.html"><i class="fas fa-bolt me-2"></i>Electric Vehicles</a></li>
+            <li><a class="dropdown-item text-white" href="accessories.html"><i class="fas fa-helmet-safety me-2"></i>Accessories</a></li>
+          </ul>
+        </div>
+
+        <a class="d-flex align-items-center text-decoration-none" href="index.html">
+          <img src="image.jpg" alt="Roam Rides Logo" width="50" height="50" class="rounded-circle" />
+          <span class="brand-text ms-2">ROAM RIDES</span>
+        </a>
+      </div>
+
+      <form class="d-flex search-bar" role="search">
+        <input class="form-control me-2 glass-effect" type="search" placeholder="Search Bikes, Gears..." aria-label="Search" style="background: rgba(30, 30, 30, 0.8); color: #fff;">
+        <button class="btn btn-neon" type="submit"><i class="fas fa-search"></i></button>
+      </form>
+
+      <div class="d-flex align-items-center header-icons" style="gap: 20px;">
+        <a href="#" class="neon-text text-decoration-none" data-bs-toggle="modal" data-bs-target="#loginModal">
+          <i class="fas fa-user me-1"></i> Sign In
+        </a>
+        <a href="#" class="neon-text text-decoration-none">
+          <i class="fas fa-clipboard-list me-1"></i> Orders
+        </a>
+        <a href="#" class="neon-text text-decoration-none position-relative" id="cartIcon">
+          <i class="fas fa-shopping-cart me-1"></i> Cart
+          <span class="cart-count">0</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <nav class="navbar navbar-expand-lg" style="background-color: rgba(35, 47, 62, 0.95); margin-top: 60px;">
+    <div class="container-fluid justify-content-center">
+      <div class="d-flex flex-wrap justify-content-center">
+        <a class="nav-link text-white" href="#">Scooters</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="my-4">
+    <div class="container" style="max-width: 900px;">
+      <div id="bikeCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+          <button type="button" data-bs-target="#bikeCarousel" data-bs-slide-to="0" class="active" aria-current="true"></button>
+          <button type="button" data-bs-target="#bikeCarousel" data-bs-slide-to="1"></button>
+          <button type="button" data-bs-target="#bikeCarousel" data-bs-slide-to="2"></button>
+          <button type="button" data-bs-target="#bikeCarousel" data-bs-slide-to="3"></button>
+          <button type="button" data-bs-target="#bikeCarousel" data-bs-slide-to="4"></button>
+          <button type="button" data-bs-target="#bikeCarousel" data-bs-slide-to="5"></button>
+        </div>
+        <div class="carousel-inner rounded-3 overflow-hidden">
+          <div class="carousel-item active">
+            <img src="access 125.jpg" class="d-block w-100" alt="Slide 1">
+            <div class="carousel-caption d-none d-md-block">
+              <h5 class="neon-text">Suzuki Access 125</h5>
+              <p>Stylish and fuel-efficient scooter with a comfortable ride</p>
+              <button class="btn btn-neon">Buy Now</button>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <img src="xtech.png" class="d-block w-100" alt="Slide 2">
+            <div class="carousel-caption d-none d-md-block">
+              <h5 class="neon-text">Hero Pleasure Xtech</h5>
+              <p></p>
+              <button class="btn btn-neon">Buy Now</button>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <img src="burgaman.webp" class="d-block w-100" alt="Slide 3">
+            <div class="carousel-caption d-none d-md-block">
+              <h5 class="neon-text">Suzuki Burgaman</h5>
+              <p>A Bulk scooter known for its storage space and comfortable seating.</p>
+              <button class="btn btn-neon">Buy Now</button>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <img src="zuma 125.avif" class="d-block w-100" alt="Slide 4">
+            <div class="carousel-caption d-none d-md-block">
+              <h5 class="neon-text">Yamaha Zuma</h5>
+              <p>A Youth scooter with a comfortable design and efficient engine</p>
+              <button class="btn btn-neon">Buy Now</button>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <img src="ray zr.webp" class="d-block w-100" alt="Slide 5">
+            <div class="carousel-caption d-none d-md-block">
+              <h5 class="neon-text">Yamaha Ray ZR 125</h5>
+              <p>Sporty scooter with a bold design and agile handling.</p>
+              <button class="btn btn-neon">Buy Now</button>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <img src="fascino.avif" class="d-block w-100" alt="Slide 6">
+            <div class="carousel-caption d-none d-md-block">
+              <h5 class="neon-text">Fascino</h5>
+              <p>Stylish and Reliable engine</p>
+              <button class="btn btn-neon">Buy Now</button>
+            </div>
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#bikeCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#bikeCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="my-5">
+    <div class="container">
+      <h2 class="neon-text mb-4"><i class="fas fa-scooter me-2"></i>Scooters</h2>
+      <div class="row g-4">
+
+        <div class="col-md-6 col-lg-4">
+          <div class="card">
+            <img src="access 125.jpg" class="card-img-top" alt="Yamaha Fascino">
+            <div class="card-body">
+              <h5 class="card-title">Suzuki Access 125</h5>
+              <p class="card-text">Stylish and fuel-efficient scooter with a comfortable ride.</p>
+              <div class="price">₹74,530</div>
+              <div class="card-actions">
+                <button class="btn btn-card btn-sm glass-effect add-to-cart" data-type="scooter" data-id="fascino">Add to Cart</button>
+                <button class="btn btn-card btn-sm btn-neon">Buy Now</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+          <div class="card">
+            <img src="activa 7g.avif" class="card-img-top" alt="Honda Activa 7G">
+            <div class="card-body">
+              <h5 class="card-title">Honda Activa 7G</h5>
+              <p class="card-text">Reliable and popular scooter known for its durability and smooth performance.</p>
+              <div class="price">₹80,000</div>
+              <div class="card-actions">
+                <button class="btn btn-card btn-sm glass-effect add-to-cart" data-type="scooter" data-id="activa7g">Add to Cart</button>
+                <button class="btn btn-card btn-sm btn-neon">Buy Now</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+          <div class="card">
+            <img src="ray zr.webp" class="card-img-top" alt="Yamaha Ray ZR">
+            <div class="card-body">
+              <h5 class="card-title">Yamaha Ray ZR</h5>
+              <p class="card-text">Sporty scooter with a bold design and agile handling.</p>
+              <div class="price">₹86,430</div>
+              <div class="card-actions">
+                <button class="btn btn-card btn-sm glass-effect add-to-cart" data-type="scooter" data-id="rayzr">Add to Cart</button>
+                <button class="btn btn-card btn-sm btn-neon">Buy Now</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+          <div class="card">
+            <img src="6g.avif" class="card-img-top" alt="Honda Activa 6G">
+            <div class="card-body">
+              <h5 class="card-title">Honda Activa 6G</h5>
+              <p class="card-text">A trusted and widely preferred scooter for everyday commuting.</p>
+              <div class="price">₹85,403</div>
+              <div class="card-actions">
+                <button class="btn btn-card btn-sm glass-effect add-to-cart" data-type="scooter" data-id="activa6g">Add to Cart</button>
+                <button class="btn btn-card btn-sm btn-neon">Buy Now</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+          <div class="card">
+            <img src="xtech.png" class="card-img-top" alt="Zuma 125">
+            <div class="card-body">
+              <h5 class="card-title">Pleasure plus Xtech</h5>
+              <p class="card-text">Compact and convenient scooter with a fully advanced features and technology.</p>
+              <div class="price">₹86,430</div>
+              <div class="card-actions">
+                <button class="btn btn-card btn-sm glass-effect add-to-cart" data-type="scooter" data-id="zuma125">Add to Cart</button>
+                <button class="btn btn-card btn-sm btn-neon">Buy Now</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+          <div class="card">
+            <img src="chetak.jpeg" class="card-img-top" alt="Bajaj Chetak">
+            <div class="card-body">
+              <h5 class="card-title">Bajaj Chetak</h5>
+              <p class="card-text">Vinatge and classic scooter with a focus on sustainability and modern features.</p>
+              <div class="price">₹87,430</div>
+              <div class="card-actions">
+                <button class="btn btn-card btn-sm glass-effect add-to-cart" data-type="scooter" data-id="chetak">Add to Cart</button>
+                <button class="btn btn-card btn-sm btn-neon">Buy Now</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+          <div class="card">
+            <img src="zuma 125.avif" class="card-img-top" alt="Yamaha Jupiter Z1">
+            <div class="card-body">
+              <h5 class="card-title">Yamaha zuma 125</h5>
+              <p class="card-text">A Youth scooter with a comfortable design and efficient engine.</p>
+              <div class="price">₹96,430</div>
+              <div class="card-actions">
+                <button class="btn btn-card btn-sm glass-effect add-to-cart" data-type="scooter" data-id="jupiterz1">Add to Cart</button>
+                <button class="btn btn-card btn-sm btn-neon">Buy Now</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+          <div class="card">
+            <img src="burgaman.webp" class="card-img-top" alt="Yamaha Jupiter 135L">
+            <div class="card-body">
+              <h5 class="card-title">Suzuki Burgman</h5>
+              <p class="card-text">A Bulk scooter known for its storage space and comfortable seating.</p>
+              <div class="price">₹1,02,430</div>
+              <div class="card-actions">
+                <button class="btn btn-card btn-sm glass-effect add-to-cart" data-type="scooter" data-id="jupiter135l">Add to Cart</button>
+                <button class="btn btn-card btn-sm btn-neon">Buy Now</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+          <div class="card">
+            <img src="jupiter 125.avif" class="card-img-top" alt="TVS Jupiter">
+            <div class="card-body">
+              <h5 class="card-title">TVS Jupiter</h5>
+              <p class="card-text">A popular scooter praised for its features and comfortable ride quality.</p>
+              <div class="price">₹93,930</div>
+              <div class="card-actions">
+                <button class="btn btn-card btn-sm glass-effect add-to-cart" data-type="scooter" data-id="tvsjupiter">Add to Cart</button>
+                <button class="btn btn-card btn-sm btn-neon">Buy Now</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+          <div class="card">
+            <img src="avenis.jpeg" class="card-img-top" alt="Suzuki Avenis">
+            <div class="card-body">
+              <h5 class="card-title">Suzuki Avenis</h5>
+              <p class="card-text">A sporty scooter with a peppy engine and modern styling.</p>
+              <div class="price">₹96,000</div>
+              <div class="card-actions">
+                <button class="btn btn-card btn-sm glass-effect add-to-cart" data-type="scooter" data-id="avenis">Add to Cart</button>
+                <button class="btn btn-card btn-sm btn-neon">Buy Now</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <footer class="glass-effect">
+    <div class="container">
+      <div class="row">
+        <div class="col-12 text-center">
+          <p>&copy; 2025 Roam Rides. All Rights Reserved. | Designed and Developed by Team MLU Tech</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content glass-effect">
+        <div class="modal-header border-0">
+          <h5 class="modal-title neon-text" id="cartModalLabel"><i class="fas fa-shopping-cart me-2"></i>Your Cart</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div id="cartItems">
+            <div class="text-center py-4">
+              <p>Your cart is currently empty</p>
+              <a href="bikehome.html" class="btn btn-neon">Browse Bikes</a>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-0 d-flex justify-content-between">
+          <div>
+            <h5 class="neon-text">Total: <span id="cartTotal">₹0</span></h5>
+          </div>
+          <div>
+            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Continue Shopping</button>
+            <button type="button" class="btn btn-neon" id="checkoutBtn">Checkout</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let cart = [];
+    let cartCount = 0;
+
+    if (localStorage.getItem('cart')) {
+      cart = JSON.parse(localStorage.getItem('cart'));
+      updateCartCount();
+    }
+
+    document.querySelectorAll('.add-to-cart').forEach(button => {
+      button.addEventListener('click', function() {
+        const itemId = this.getAttribute('data-id');
+        const itemType = this.getAttribute('data-type');
+        const card = this.closest('.card');
+        const itemName = card.querySelector('.card-title').textContent;
+        const itemPrice = card.querySelector('.price').textContent;
+
+        const existingItem = cart.find(item => item.id === itemId && item.type === itemType);
+
+        if (existingItem) {
+          existingItem.quantity += 1;
+        } else {
+          cart.push({
+            id: itemId,
+            type: itemType,
+            name: itemName,
+            price: itemPrice,
+            quantity: 1
+          });
+        }
+
+        updateCartCount();
+        saveCart();
+        showNotification(`${itemName} added to cart`);
+      });
+    });
+
+    document.getElementById('cartIcon').addEventListener('click', function(e) {
+      e.preventDefault();
+      updateCartModal();
+      const cartModal = new bootstrap.Modal(document.getElementById('cartModal'));
+      cartModal.show();
+    });
+
+    document.getElementById('checkoutBtn').addEventListener('click', function() {
+      alert('Proceeding to checkout with ' + cartCount + ' items');
+    });
+
+    function updateCartCount() {
+      cartCount = cart.reduce((total, item) => total + item.quantity, 0);
+      document.querySelector('.cart-count').textContent = cartCount;
+    }
+
+    function saveCart() {
+      localStorage.setItem('cart', JSON.stringify(cart));
+    }
+
+    function updateCartModal() {
+      const cartItemsElement = document.getElementById('cartItems');
+      const cartTotalElement = document.getElementById('cartTotal');
+
+      if (cart.length === 0) {
+        cartItemsElement.innerHTML = `
+          <div class="text-center py-4">
+            <p>Your cart is currently empty</p>
+            <a href="bikehome.html" class="btn btn-neon">Browse Bikes</a>
+          </div>
+        `;
+        cartTotalElement.textContent = '₹0';
+        document.getElementById('checkoutBtn').disabled = true;
+        return;
+      }
+
+      document.getElementById('checkoutBtn').disabled = false;
+
+      let itemsHTML = '';
+      let total = 0;
+
+      cart.forEach(item => {
+        const priceValue = parseInt(item.price.replace(/[^0-9]/g, ''));
+        total += priceValue * item.quantity;
+
+        itemsHTML += `
+          <div class="cart-item mb-3 p-3 glass-effect rounded">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h6>${item.name}</h6>
+                <p class="mb-0">${item.price} × ${item.quantity}</p>
+              </div>
+              <div class="d-flex align-items-center">
+                <span class="me-3">₹${(priceValue * item.quantity).toLocaleString('en-IN')}</span>
+                <button class="btn btn-sm btn-outline-danger remove-item" data-id="${item.id}" data-type="${item.type}">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      cartItemsElement.innerHTML = itemsHTML;
+      cartTotalElement.textContent = `₹${total.toLocaleString('en-IN')}`;
+
+      document.querySelectorAll('.remove-item').forEach(button => {
+        button.addEventListener('click', function() {
+          const itemId = this.getAttribute('data-id');
+          const itemType = this.getAttribute('data-type');
+          removeFromCart(itemId, itemType);
+        });
+      });
+    }
+
+    function removeFromCart(itemId, itemType) {
+      cart = cart.filter(item => !(item.id === itemId && item.type === itemType));
+      saveCart();
+      updateCartCount();
+      updateCartModal();
+
+      if (cart.length === 0) {
+        document.getElementById('cartItems').innerHTML = `
+          <div class="text-center py-4">
+            <p>Your cart is currently empty</p>
+            <a href="bikehome.html" class="btn btn-neon">Browse Bikes</a>
+          </div>
+        `;
+        document.getElementById('cartTotal').textContent = '₹0';
+        document.getElementById('checkoutBtn').disabled = true;
+      }
+    }
+
+    function showNotification(message) {
+      const notification = document.createElement('div');
+      notification.className = 'position-fixed bottom-0 end-0 m-3 p-3 glass-effect rounded neon-text';
+      notification.style.zIndex = '1100';
+      notification.style.transition = 'all 0.3s ease';
+      notification.innerHTML = `
+        <i class="fas fa-check-circle me-2"></i> ${message}
+      `;
+      document.body.appendChild(notification);
+
+      setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => {
+          notification.remove();
+        }, 300);
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
